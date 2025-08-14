@@ -18,11 +18,11 @@ class SiteController extends Controller
 
     public function actionIndex($page = 1, $category = '', $keyword = '')
     {
-        $perPage = 6; // jumlah berita per halaman
+        $perPage = 10; // jumlah berita per halaman
 
         // Ambil semua sumber berita sesuai kategori
         $hasil = \Yii::$app->newsApi->getTopHeadlines($category);
-        $sources = $hasil['sources'] ?? [];
+        $sources =array_slice( $hasil['sources'],0,10) ?? [];
 
         // Filter pencarian berdasarkan keyword di array
         if (!empty($keyword)) {
@@ -48,18 +48,7 @@ class SiteController extends Controller
         // Hitung total halaman
         $totalPages = ceil($total / $perPage);
 
-        $categories = [
-            '' => 'ALL CATEGORY',
-            'business' => 'Business',
-            'entertainment' => 'Entertainment',
-            'general' => 'General',
-            'health' => 'Health',
-            'science' => 'Science',
-            'sports' => 'Sports',
-            'technology' => 'Technology',
-            'politic' =>'Politic'
-        ];
-
+ 
         $categoryStyles = [
             'all_category'   => ['name' =>'' ,'color' => '', 'icon' => ''],
             'business'      => ['name' =>'business' ,'color' => 'primary', 'icon' => 'fa-briefcase'],
@@ -69,7 +58,7 @@ class SiteController extends Controller
             'science'       => ['name' =>'science' ,'color' => 'info', 'icon' => 'fa-flask'],
             'sports'        => ['name' =>'sports' ,'color' => 'danger', 'icon' => 'fa-football-ball'],
             'technology'    => ['name' =>'technology' ,'color' => 'dark', 'icon' => 'fa-microchip'],
-            'politic'       => ['name' =>'politic' ,'color' => 'primary', 'icon' => 'fa-microchip'],
+            'politic'       => ['name' =>'politic' ,'color' => 'primary', 'icon' => 'fa-university'],
         ];
 
         return $this->render('index', [

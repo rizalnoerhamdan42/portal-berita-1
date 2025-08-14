@@ -1,9 +1,5 @@
 <?php
-$this->title = 'Portal Berita';
- 
-
-// Warna & ikon per kategori
-
+    $this->title = '🌏 Top 10 News Global 🌏';
 ?>
 
 <!-- Font Awesome -->
@@ -57,7 +53,7 @@ body {
 
 <div class="container my-4">
     <h1 class="mb-4 text-center text-primary fw-bold">
-        🌏 Top News Global
+        <?=  $this->title ?>
     </h1>
 
     <!-- Filter Category -->
@@ -96,7 +92,7 @@ body {
                 $catKey = strtolower($news['category'] ?? 'general');
                 $style = $categoryStyles[$catKey] ?? ['color' => 'secondary', 'icon' => 'fa-tag'];
         ?>
-        <div class="col-lg-4 col-md-6">
+        <div class="col-lg-12 col-md-6">
             <a href="<?= $news['url'] ?>" target="_blank" class="text-decoration-none">
                 <div class="card card-news h-100 position-relative">
 
