@@ -1,15 +1,16 @@
-# Gunakan image Yii2 + PHP 7.4 + Apache
 FROM yiisoftware/yii2-php:7.4-apache
 
-# Set folder kerja di container
-WORKDIR /var/www/html
+RUN apt-get update && apt-get install -y unzip git && rm -rf /var/lib/apt/lists/*
 
-# Copy semua source code ke container
-COPY . /var/www/html
+WORKDIR /app
 
-# Install ekstensi PHP yang dibutuhkan
-RUN docker-php-ext-install pdo pdo_mysql \
-    && a2enmod rewrite
+COPY . /app
 
-# Ubah permission supaya web server bisa akses
-RUN chown -R www-data:www-data /var/www/html
+RUN sed -i 's|/var/www/html|/app/web|g' /etc/apache2/sites-available/000-default.conf \
+    && sed -i 's|/var/www/html|/app/web|g' /etc/apache2/apache2.conf
+
+RUN chown -R www-data:www-data /app && chmod -R 755 /app
+
+CMD if [ ! -f /app/web/index.php ]; then \
+        composer create-project --prefer-dist yiisoft/yii2-app-basic /app; \
+    fi && apache2-foreground

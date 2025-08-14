@@ -1,16 +1,13 @@
 version: '3.8'
-
 services:
-  yii2:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  yii2-app:
+    build: .
+    container_name: yii2-app
     ports:
-      - "9090:80"
+      - "9091:80"
     volumes:
-      - .:/var/www/html
-    networks:
-      - appnet
-
-networks:
-  appnet:
+      # Source code Yii2
+      - ./src:/app
+      # Composer cache di Windows (biar cepat)
+      - ~/.composer-docker/cache:/root/.composer/cache
+    restart: always
