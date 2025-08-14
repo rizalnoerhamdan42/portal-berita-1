@@ -21,7 +21,7 @@ class SiteController extends Controller
         $perPage = 6; // jumlah berita per halaman
 
         // Ambil semua sumber berita sesuai kategori
-        $hasil = \Yii::$app->newsApi->getSources($category);
+        $hasil = \Yii::$app->newsApi->getTopHeadlines($category);
         $sources = $hasil['sources'] ?? [];
 
         // Filter pencarian berdasarkan keyword di array
@@ -56,68 +56,53 @@ class SiteController extends Controller
             'health' => 'Health',
             'science' => 'Science',
             'sports' => 'Sports',
-            'technology' => 'Technology'
+            'technology' => 'Technology',
+            'politic' =>'Politic'
+        ];
+
+        $categoryStyles = [
+            'all_category'   => ['name' =>'' ,'color' => '', 'icon' => ''],
+            'business'      => ['name' =>'business' ,'color' => 'primary', 'icon' => 'fa-briefcase'],
+            'entertainment' => ['name' =>'entertainment' ,'color' => 'warning', 'icon' => 'fa-film'],
+            'general'       => ['name' =>'general' ,'color' => 'secondary', 'icon' => 'fa-globe'],
+            'health'        => ['name' =>'health' ,'color' => 'success', 'icon' => 'fa-heartbeat'],
+            'science'       => ['name' =>'science' ,'color' => 'info', 'icon' => 'fa-flask'],
+            'sports'        => ['name' =>'sports' ,'color' => 'danger', 'icon' => 'fa-football-ball'],
+            'technology'    => ['name' =>'technology' ,'color' => 'dark', 'icon' => 'fa-microchip'],
+            'politic'       => ['name' =>'politic' ,'color' => 'primary', 'icon' => 'fa-microchip'],
         ];
 
         return $this->render('index', [
             'data'        => $pagedData,
             'page'        => $page,
             'totalPages'  => $totalPages,
-            'offset'       => $offset,
+            'offset'      => $offset,
             'category'    => $category,
-            'filter_1'    => $categories,
+            'categoryStyles' => $categoryStyles,
             'keyword'     => $keyword,
+            'total'       => $total,
             'from'        => $total ? ($offset + 1) : 0,
-            'to'          => $total ? min($offset + $total, $total) : 0
+            'to'          => $total ? min($offset + $perPage, $total) : 0
         ]);
     }
-
-    public function actionCategory($category)
-    {
-        $news = \Yii::$app->newsApi->getTopHeadlines('us', $category, 20);
-        return $this->render('category', [
-            'category' => $category,
-            'articles' => $news['articles'] ?? [],
-        ]);
-    }
-
-    public function actionSearch($category = 'general', $keyword = '', $page = 1)
-    {
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_HTML;
-
-        // Ambil data sesuai filter
-        [$data, $totalPages] = $this->getNewsData($category, $keyword, $page);
-
-        return $this->renderPartial('_news_list', [
-            'data' => $data,
-            'categoryStyles' => [
-                'business'      => ['color' => 'primary', 'icon' => 'fa-briefcase'],
-                'entertainment' => ['color' => 'warning', 'icon' => 'fa-film'],
-                'general'       => ['color' => 'secondary', 'icon' => 'fa-globe'],
-                'health'        => ['color' => 'success', 'icon' => 'fa-heartbeat'],
-                'science'       => ['color' => 'info', 'icon' => 'fa-flask'],
-                'sports'        => ['color' => 'danger', 'icon' => 'fa-football-ball'],
-                'technology'    => ['color' => 'dark', 'icon' => 'fa-microchip'],
-            ],
-            'category' => $category,
-            'page' => $page,
-            'totalPages' => $totalPages
-        ]);
-    }
-
-
-
-
 
      
 
+ 
+ 
 
 
     public function actionAll()
     {
         $request = Yii::$app->request;
-
+        
         $keyword = $request->get('keyword', '');
+
+        if($keyword==="" or is_null($keyword)){
+            $keyword ='android';
+        }
+
+
         $from = $request->get('from', date('Y-m-d', strtotime('-2 days')));
         $to = $request->get('to', date('Y-m-d'));
         $page = (int)$request->get('page', 1);
@@ -126,29 +111,28 @@ class SiteController extends Controller
    
 
        
-       $newsApi = Yii::$app->newsApi;
-        // $data = $newsApi->getEverything($keyword, $from, $to, $page, $pageSize);
+        $newsApi = Yii::$app->newsApi; 
         $data = $newsApi->getEverything($keyword, $from, $to, $page, $pageSize) ? $newsApi->getEverything($keyword, $from, $to, $page, $pageSize): [];
         
         // var_dump($data );
         if ($request->isAjax) {
              return $this->renderPartial('_list', [
-                 'articles' => $data['articles'] ?? [],
+                'articles' => $data['articles'] ?? [],
                 'totalResults' => $data['totalResults'] ?? 0,
-                 'pageSize' => $pageSize,
-                 'currentPage' => $page
+                'pageSize' => $pageSize,
+                'currentPage' => $page
              ]);
-         }
+        }
 
-         return $this->render('news_all', [
-             'keyword' => $keyword,
-             'from' => $from,
+        return $this->render('news_all', [
+            'keyword' => $keyword,
+            'from' => $from,
             'to' => $to,
             'articles' => $data['articles'] ?? [],
-             'totalResults' => $data['totalResults'] ?? 0,
-           'pageSize' => $pageSize,
-             'currentPage' => $page,
-             'data' =>$data 
+            'totalResults' => $data['totalResults'] ?? 0,
+            'pageSize' => $pageSize,
+            'currentPage' => $page,
+            'data' =>$data 
         ]);
     }
 

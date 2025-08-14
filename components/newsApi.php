@@ -9,9 +9,9 @@ class NewsApi extends Component
     private $baseUrl = 'https://newsapi.org/v2/';
      
 
-   public function getTopHeadlines($country = 'us', $category = null, $pageSize = 10, $page = 1)
+   public function getTopHeadlines($category = null)
     {
-   $apiKey = Yii::$app->params['newsApiKey'];
+        $apiKey = Yii::$app->params['newsApiKey'];
         $url = $this->baseUrl . 'top-headlines/sources?apiKey=' . $apiKey;
         if ($category) {
             $url .= '&category=' . urlencode($category);
@@ -22,31 +22,12 @@ class NewsApi extends Component
 
   
 
-    public function getSources($category = null)
-    {
-        $apiKey = Yii::$app->params['newsApiKey'];
-        $url = $this->baseUrl . 'top-headlines/sources?apiKey=' . $apiKey;
-        if ($category) {
-            $url .= '&category=' . urlencode($category);
-        }
-        return $this->fetch($url);
-    }
 
   
 
 
-    public function searchNews($keyword, $pageSize = 20)
-    {
-       $url = $this->baseUrl . 'everything?q=' . urlencode($keyword) . '&pageSize=' . $pageSize;
-        return $this->fetch($url);
-    }
-    
 
-
-
-
-
-    public function getEverything($query = 'android', $from = '', $to = '', $page = 1, $pageSize = 10)
+    public function getEverything($query = '', $from = '', $to = '', $page = 1, $pageSize = 10)
     {
 
         if (empty($query)) {

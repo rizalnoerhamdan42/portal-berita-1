@@ -3,15 +3,7 @@ $this->title = 'Portal Berita';
  
 
 // Warna & ikon per kategori
-$categoryStyles = [
-    'business'      => ['color' => 'primary', 'icon' => 'fa-briefcase'],
-    'entertainment' => ['color' => 'warning', 'icon' => 'fa-film'],
-    'general'       => ['color' => 'secondary', 'icon' => 'fa-globe'],
-    'health'        => ['color' => 'success', 'icon' => 'fa-heartbeat'],
-    'science'       => ['color' => 'info', 'icon' => 'fa-flask'],
-    'sports'        => ['color' => 'danger', 'icon' => 'fa-football-ball'],
-    'technology'    => ['color' => 'dark', 'icon' => 'fa-microchip'],
-];
+
 ?>
 
 <!-- Font Awesome -->
@@ -73,9 +65,9 @@ body {
         <div class="row g-2 justify-content-center">
             <div class="col-md-4 col-sm-6">
                 <select name="category" class="form-select shadow-sm">
-                    <?php foreach ($filter_1 as $key => $label): ?>
-                    <option value="<?= $key ?>" <?= $key == $category ? 'selected' : '' ?>>
-                        <?= $label ?>
+                    <?php foreach ($categoryStyles as $key => $label): ?>
+                    <option value="<?= $label['name'] ?>" <?= $label['name'] == $category ? 'selected' : '' ?>>
+                        <?= ucfirst($label['name']) ?: 'ALL CATEGORY' ?>
                     </option>
                     <?php endforeach; ?>
                 </select>
@@ -99,13 +91,22 @@ body {
             if(count($data )> 0){
         ?>
 
-        <?php  foreach ($data as $news): 
-                    $catKey = strtolower($news['category'] ?? 'general');
-                    $style = $categoryStyles[$catKey] ?? ['color' => 'secondary', 'icon' => 'fa-tag'];
-                ?>
+        <?php
+            foreach ($data as $news): 
+                $catKey = strtolower($news['category'] ?? 'general');
+                $style = $categoryStyles[$catKey] ?? ['color' => 'secondary', 'icon' => 'fa-tag'];
+        ?>
         <div class="col-lg-4 col-md-6">
             <a href="<?= $news['url'] ?>" target="_blank" class="text-decoration-none">
-                <div class="card card-news h-100">
+                <div class="card card-news h-100 position-relative">
+
+                    <!-- Tombol di kanan bawah -->
+                    <a href="<?= $news['url'] ?>" target="_blank"
+                        class="btn btn-sm btn-primary position-absolute bottom-0 end-0 m-2"
+                        onclick="event.stopPropagation();">
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>
+
                     <div class="card-body">
                         <h5 class="news-title">
                             <i class="fas <?= $style['icon'] ?> me-2 text-<?= $style['color'] ?>"></i>
@@ -117,7 +118,7 @@ body {
                         <div class="mt-2">
                             <span class="badge bg-<?= $style['color'] ?> badge-clickable">
                                 <i class="fas <?= $style['icon'] ?> me-1"></i>
-                                category : <?=ucfirst($news['category']) ?>
+                                category : <?= ucfirst($news['category']) ?>
                             </span>
                             <span class="badge bg-warning text-dark badge-clickable">
                                 <i class="fas fa-language me-1"></i>
@@ -132,6 +133,8 @@ body {
                 </div>
             </a>
         </div>
+
+
         <?php endforeach; ?>
 
         <?php }else {?>
@@ -157,7 +160,8 @@ body {
             <div class="d-flex justify-content-center align-items-center" style="height: 100px;">
                 <div class="text-center">
                     <span class="badge bg-primary px-3 py-2 fs-6 shadow-sm">
-                        Menampilkan <strong><?= $from ?></strong> dari <strong><?= $to ?></strong> data
+                        Show <strong><?= $from ?></strong> - <strong><?= $to ?></strong> of
+                        <strong><?= $total ?> News</strong>
                     </span>
                 </div>
             </div>

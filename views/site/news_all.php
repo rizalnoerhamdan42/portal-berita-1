@@ -14,7 +14,7 @@ $ajaxUrl = Url::to(['site/all']);
     <div class="card p-3 mb-4 shadow-sm rounded-3 border-0">
         <div class="row g-2">
             <div class="col-md-4">
-                <input type="text" id="search-keyword" class="form-control" placeholder="Search keyword..."
+                <input type="text" id="search-keyword" class="form-control" placeholder="default is android "
                     value="<?= Html::encode($keyword) ?>">
             </div>
             <div class="col-md-3">
