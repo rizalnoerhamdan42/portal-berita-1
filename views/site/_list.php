@@ -5,6 +5,9 @@ $totalPages = ceil($totalResults / $pageSize);
 ?>
 
 <div class="list-group">
+
+    <?php if ($totalResults > 0): ?>
+
     <?php foreach ($articles as $article): ?>
     <div class="list-group-item list-group-item-action py-3 border-0 border-bottom"
         style="cursor: pointer; min-height: 180px;"
@@ -19,13 +22,13 @@ $totalPages = ceil($totalResults / $pageSize);
             <div class="col-8 col-md-9 d-flex flex-column">
                 <div>
                     <h5 class="mb-1 fw-semibold"><?= Html::encode($article['title']) ?></h5>
-                    <?php if(!empty($article['source']['name'])): ?>
+                    <?php if (!empty($article['source']['name'])): ?>
                     <small class="text-muted d-block mb-1">
                         <?= Html::encode($article['source']['name']) ?> •
                         <?= date('d M Y', strtotime($article['publishedAt'])) ?>
                     </small>
                     <?php endif; ?>
-                    <?php if(!empty($article['description'])): ?>
+                    <?php if (!empty($article['description'])): ?>
                     <p class="mb-2 text-secondary small"><?= Html::encode($article['description']) ?></p>
                     <?php endif; ?>
                 </div>
@@ -40,7 +43,22 @@ $totalPages = ceil($totalResults / $pageSize);
         </div>
     </div>
     <?php endforeach; ?>
+
+    <?php else: ?>
+
+    <div class="list-group-item list-group-item-action py-3 border-0 border-bottom">
+        <div class="col-lg-12">
+            <div class="d-flex justify-content-center align-items-center" style="height: 100px;">
+                <div class="text-center">
+                    <span class="text-muted fw-bold">SORRY, DATA NOT FOUND</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <?php endif; ?>
 </div>
+
 
 <!-- Pagination -->
 <?php if($totalPages > 1): ?>
